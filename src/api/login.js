@@ -17,7 +17,7 @@ export function listUser(data) {
 }
 
 export function addUser(data) {
-    const url = '/auth/user'
+    const url = '/user/add'
     return $axios.post(url, data)
 }
 

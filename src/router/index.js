@@ -103,6 +103,12 @@ export const asyncRoutes = [
                 path: 'base-user',
                 name: 'BaseUser',
                 component: () => import('@/views/user/index'),
+                meta: { title: 'OLd' },
+            },
+            {
+                path: 'user_',
+                name: 'UserList',
+                component: () => import('@/views/user/user.vue'),
                 meta: { title: '用户管理' },
             },
             {
@@ -110,12 +116,6 @@ export const asyncRoutes = [
                 name: 'RoleUser',
                 component: () => import('@/views/role/index'),
                 meta: { title: '角色管理' },
-            },
-            {
-                path: 'common',
-                name: 'Common',
-                component: () => import('@/views/common/index'),
-                meta: { title: 'Common' },
             },
         ],
     },
@@ -172,14 +172,14 @@ router.beforeEach(async (to, from, next) => {
     } else {
         if (store.getters.token) {
             const hasRoles = store.getters.roles.length > 0
-            console.log('role', hasRoles)
+            // console.log('role', hasRoles)
             if (hasRoles) {
                 next()
             } else {
                 try {
-                    console.log('开始获取权限')
+                    // console.log('开始获取权限')
                     const res = await store.dispatch('user/_getInfo')
-                    console.log('roles', res)
+                    // console.log('roles', res)
                     // 过期
                     if (res.errorCode === '502') {
                         await store.dispatch('user/_refreshToken')
@@ -187,6 +187,7 @@ router.beforeEach(async (to, from, next) => {
                     // 失效
                     if (res.errorCode === '503') {
                         Message.error(res.message)
+                        localStorage.removeItem('token')
                         next({
                             path: '/login',
                             query: {
@@ -195,9 +196,19 @@ router.beforeEach(async (to, from, next) => {
                         })
                     }
                     //TODO 获取菜单，按钮权限
-                    let roles = ['Home', 'Dashbord', 'Login', '404', 'User', 'Table']
+                    let roles = [
+                        'Home',
+                        'Dashbord',
+                        'Login',
+                        '404',
+                        'User',
+                        'Table',
+                        'BaseUser',
+                        'RoleUser',
+                        'UserList',
+                    ]
                     const addRoutes = await store.dispatch('permission/getAsyncRoutes', roles)
-                    console.log('add', addRoutes)
+                    // console.log('add', addRoutes)
                     router.addRoutes(addRoutes)
 
                     // hack method to ensure that addRoutes is complete

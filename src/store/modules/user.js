@@ -68,7 +68,6 @@ const actions = {
             getInfo()
                 .then((res) => {
                     if (res.code === 0) {
-                        console.log(res.obj)
                         const { loginName, realName, roleAlias } = res.obj
                         commit('SET_ROLES', [roleAlias])
                         commit('SET_NAME', loginName)

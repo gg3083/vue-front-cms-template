@@ -6,12 +6,10 @@ import '@/style/index.scss' // glob scss
 import './plugins/element.js'
 import animated from 'animate.css'
 import '@/assets/iconfont/iconfont.css'
-import filters from './filters'
+import * as filters from './filters'
 
 Vue.use(animated)
-// import SlideVerify from 'vue-monoplasty-slide-verify'
 
-// Vue.use(SlideVerify)
 Vue.config.productionTip = false
 Object.keys(filters).forEach((key) => {
     Vue.filter(key, filters[key])

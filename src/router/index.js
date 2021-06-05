@@ -100,22 +100,22 @@ export const asyncRoutes = [
         },
         children: [
             {
-                path: 'base-user',
-                name: 'BaseUser',
-                component: () => import('@/views/user/index'),
-                meta: { title: 'OLd' },
-            },
-            {
                 path: 'user_',
                 name: 'UserList',
                 component: () => import('@/views/user/user.vue'),
                 meta: { title: '用户管理' },
             },
             {
-                path: 'role-user',
+                path: 'role_',
                 name: 'RoleUser',
-                component: () => import('@/views/role/index'),
+                component: () => import('@/views/role/role'),
                 meta: { title: '角色管理' },
+            },
+            {
+                path: 'permission_',
+                name: 'PermissionUser',
+                component: () => import('@/views/permission/permission'),
+                meta: { title: '权限管理' },
             },
         ],
     },

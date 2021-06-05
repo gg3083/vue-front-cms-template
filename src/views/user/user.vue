@@ -22,7 +22,7 @@
 
 <script>
 import SimplePage from '@/views/components/simple_page'
-import { listUser, addUser, forbiddenUser, normalUser, upgradeUser, setNickname } from '@/api/login'
+import { listUser, addUser, updateUser, resetPwd, deleteUser } from '@/api/user'
 import {
     tableColumn,
     searchFormColumn,
@@ -41,8 +41,8 @@ export default {
         return {
             title: '用户管理',
             fetchFunc: listUser,
-            editFunc: listUser,
-            delFunc: listUser,
+            editFunc: updateUser,
+            delFunc: deleteUser,
             addFunc: addUser,
             tableColumn: tableColumn,
             searchFormColumn,
@@ -54,9 +54,7 @@ export default {
             operateBtn,
         }
     },
-    created() {
-        console.log(this.modelFormRules)
-    },
+    created() {},
     mounted() {},
     methods: {
         restPassWord(args) {
@@ -67,7 +65,7 @@ export default {
                 type: 'warning',
             })
                 .then(() => {
-                    normalUser(args.id)
+                    resetPwd(args.id)
                         .then((res) => {
                             if (res.code === 200) {
                                 // this.tablePage.splice(this.tablePage.findIndex((item) => item.id === row.id), 1)

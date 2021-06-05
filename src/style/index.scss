@@ -68,9 +68,7 @@ body {
 #app {
   height: 100%;
 }
-.mtop30 {
-  margin-top: $px30;
-}
+
 .fontBold {
   font-weight: bold;
 }
@@ -135,4 +133,8 @@ body {
     font-size: 22px;
     margin-top: 2px;
   }
+}
+.container{
+  background: #ffffff !important;
+  margin: 20px;
 }

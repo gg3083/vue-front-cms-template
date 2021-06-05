@@ -44,14 +44,14 @@
                     </el-form>
                 </div>
             </el-row>
-            <el-row>排序：</el-row>
+            <!--            <el-row>排序：</el-row>-->
             <el-table
                 ref="myTable"
                 border
+                stripe
                 :data="tablePage"
                 size="mini"
-                :header-cell-style="{ background: '#f5f7fa' }"
-                highlight-current-row
+                :header-cell-style="{ background: '#409EFF', color: '#fff' }"
             >
                 <template v-for="(col, index) in tableColumn">
                     <!--  普通列  -->
@@ -310,7 +310,6 @@ export default {
                 this.editModelForm[item].label = item
             }
         }
-        console.log(this.addModelForm)
     },
     methods: {
         handleSize(val) {
@@ -324,14 +323,16 @@ export default {
         _getPageTab1(current, size) {
             let req = { page: current, size: size }
             this.searchFormColumn.forEach((item) => {
-                if (item.value) {
+                if (typeof item.value === 'number') {
+                    req[item.prop] = item.value
+                } else if (item.value) {
                     req[item.prop] = item.value
                 }
             })
             // console.log('搜索条件：', req)
             this.fetchFunc(req)
                 .then((res) => {
-                    this.totals = res.obj.data === null ? 0 : res.obj.data.totals
+                    this.total = res.obj.data === null ? 0 : res.obj.totals
                     this.tablePage = res.obj.data === null ? [] : res.obj.data
                 })
                 .catch((error) => {
@@ -371,10 +372,7 @@ export default {
                             this.delFunc(row.id)
                                 .then((res) => {
                                     if (res.code === 0) {
-                                        this.tablePage.splice(
-                                            this.tablePage.findIndex((item) => item.id === row.id),
-                                            1
-                                        )
+                                        this.tablePage.splice(this.tablePage.findIndex((item) => item.id === row.id), 1)
                                         this.$message.success('删除成功')
                                     } else {
                                         this.$message.error(res.message)
@@ -399,8 +397,22 @@ export default {
                     }
                 })
                 if (valid) {
-                    let id = this.editModelForm.id
-                    console.log('校验通过', id, req)
+                    let id = this.editModelForm.id.value
+                    console.log('修改校验通过', id, req)
+                    this.editFunc(id, req)
+                        .then((res) => {
+                            if (res.code === 0) {
+                                this.editDialog = false
+                                this.$message.success('修改成功！')
+                                this._getPageTab1(this.currentPage, this.pageSize)
+                                this.initModelForm()
+                            } else {
+                                this.$message.error(res.message)
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
                 } else {
                     console.log('error submit!!')
                     return false
@@ -408,7 +420,8 @@ export default {
             })
         },
         addModelFunc(formName) {
-            this.$refs[formName].validate((valid, object) => {
+            console.log(this.$refs[formName])
+            this.$refs[formName].validate((valid) => {
                 let req = {}
                 this.addModelFormColumn.forEach((item) => {
                     if (this.addModelForm[item.prop] !== '') {
@@ -422,20 +435,21 @@ export default {
                         }
                     }
                 })
-                console.log(object)
                 if (valid) {
-                    // let id = this.editModelForm.id
+                    console.log('添加校验通过', req)
                     this.addFunc(req)
                         .then((res) => {
                             if (res.code === 0) {
-                                this.$message.success('添加成功')
                                 this.addDialog = false
+                                this.$message.success('添加成功！')
+                                this._getPageTab1(this.currentPage, this.pageSize)
+                                this.initModelForm()
                             } else {
                                 this.$message.error(res.message)
                             }
                         })
-                        .catch(() => {
-                            this.$message.error('添加失败')
+                        .catch((error) => {
+                            console.log(error)
                         })
                 } else {
                     console.log('error submit!!')
@@ -455,6 +469,12 @@ export default {
                 }
             } else {
                 console.error('未绑定方法')
+            }
+        },
+        initModelForm() {
+            for (let item in this.addModelForm) {
+                this.addModelForm[item].value = ''
+                this.editModelForm[item].value = ''
             }
         },
     },

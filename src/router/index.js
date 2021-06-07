@@ -112,6 +112,12 @@ export const asyncRoutes = [
                 meta: { title: '角色管理' },
             },
             {
+                path: 'role_new',
+                name: 'RoleUser',
+                component: () => import('@/views/role/role_new'),
+                meta: { title: '角色_管理' },
+            },
+            {
                 path: 'permission_',
                 name: 'PermissionUser',
                 component: () => import('@/views/permission/permission'),

@@ -129,7 +129,7 @@ export default {
             this.currentModel = data
         },
         renderContent(h, { node, data, store }) {
-            // console.log({ node, data, store })
+            console.log({ node, data, store })
             let margin_1 = { marginLeft: '20px' }
             return (
                 <div>

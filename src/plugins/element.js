@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import InfiniteScroll from 'vue-infinite-scroll'
+
 import {
     Button,
     Row,
@@ -91,3 +93,4 @@ Vue.use(Carousel)
 Vue.use(CarouselItem)
 Vue.use(InputNumber)
 Vue.use(Loading)
+Vue.use(InfiniteScroll)

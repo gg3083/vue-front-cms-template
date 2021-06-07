@@ -321,7 +321,7 @@ export default {
             this._getPageTab1(val, this.pageSize)
         },
         _getPageTab1(current, size) {
-            let req = { page: current, size: size }
+            let req = { pageNo: current, pageSize: size }
             this.searchFormColumn.forEach((item) => {
                 if (typeof item.value === 'number') {
                     req[item.prop] = item.value

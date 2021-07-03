@@ -135,7 +135,7 @@
                     </el-form>
                 </div>
             </el-dialog>
-            <el-dialog title="添加" :visible.sync="addDialog" width="30%">
+            <el-dialog title="添加" :visible.sync="addDialog" width="30%" :close-on-click-modal="false">
                 <div>
                     <el-form ref="addForm" :rules="modelFormRules" :model="addModelForm" label-width="120px">
                         <el-form-item
@@ -174,7 +174,7 @@
                     </el-form>
                 </div>
             </el-dialog>
-            <el-dialog title="修改" :visible.sync="editDialog" width="30%">
+            <el-dialog title="修改" :visible.sync="editDialog" width="30%" :close-on-click-modal="false">
                 <div>
                     <el-form ref="editForm" :rules="modelFormRules" :model="editModelForm" label-width="120px">
                         <el-form-item
@@ -207,7 +207,7 @@
                             </span>
                         </el-form-item>
                         <el-form-item>
-                            <el-button @click="editDialog = false">取消</el-button>
+                            <el-button @click="cancelEditModel">取消</el-button>
                             <el-button type="primary" @click="editModelFunc('editForm')">保存</el-button>
                         </el-form-item>
                     </el-form>
@@ -288,6 +288,10 @@ export default {
             required: false,
             default: () => [],
         },
+        setPageSize: {
+            type: Number,
+            default: 10,
+        },
     },
     data() {
         return {
@@ -304,12 +308,14 @@ export default {
         }
     },
     created() {
+        this.pageSize = this.setPageSize
         this._getPageTab1(this.currentPage, this.pageSize)
         for (let item in this.editModelForm) {
             if (this.editModelForm[item] && this.editModelForm[item].label === '') {
                 this.editModelForm[item].label = item
             }
         }
+        console.log(this.addModelFormColumn)
     },
     methods: {
         handleSize(val) {
@@ -342,7 +348,6 @@ export default {
         getRowData(row, index, type, emit) {
             console.log(row, index, type, emit)
             if (emit) {
-                console.log('this.$emit(emit)')
                 this.$emit(emit, row)
             }
             switch (type) {
@@ -387,6 +392,10 @@ export default {
                         })
                     break
             }
+        },
+        cancelEditModel() {
+            this.editDialog = false
+            this.initModelForm()
         },
         editModelFunc(formName) {
             this.$refs[formName].validate((valid) => {
@@ -461,11 +470,21 @@ export default {
             this.addDialog = true
         },
         dynamicFunc(method, args) {
+            console.log(method)
             if (method) {
-                if (args && args.length > 0) {
-                    this[method](...args)
-                } else {
-                    this[method]()
+                try {
+                    if (args && args.length > 0) {
+                        this[method](...args)
+                    } else {
+                        this[method]()
+                    }
+                } catch (e) {
+                    // console.log(e)
+                    if (args && args.length > 0) {
+                        this.$emit(method, ...args)
+                    } else {
+                        this.$emit(method)
+                    }
                 }
             } else {
                 console.error('未绑定方法')

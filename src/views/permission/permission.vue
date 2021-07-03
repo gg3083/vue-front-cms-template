@@ -1,29 +1,33 @@
 <template>
     <div class="container">
-        <el-row
-            v-show="currentModel.id !== undefined"
-            style="margin-bottom: 20px; display: flex; justify-content: space-between;"
-        >
-            <span>权限别名：{{ currentModel.permAlias }}</span>
-            <span>权限名称：{{ currentModel.permName }}</span>
-        </el-row>
         <el-card class="anoCard">
             <div slot="header">
                 <span>{{ title }}</span>
             </div>
-            <div>
-                <el-tree
-                    v-loading="loading1"
-                    :data="treePage"
-                    ref="tree"
-                    @node-click="handleNodeClick"
-                    :default-expand-all="true"
-                    :highlight-current="true"
-                    :expand-on-click-node="false"
-                    :render-content="renderContent"
-                    show-checkbox
-                >
-                </el-tree>
+            <div style="display: flex;">
+                <div style="width: 50%">
+                    <el-tree
+                        v-loading="loading1"
+                        :data="treePage"
+                        ref="tree"
+                        @node-click="handleNodeClick"
+                        :default-expand-all="true"
+                        :highlight-current="true"
+                        :expand-on-click-node="false"
+                        :render-content="renderContent"
+                        show-checkbox
+                    >
+                    </el-tree>
+                </div>
+                <div>
+                    <el-row
+                        v-show="currentModel.id !== undefined"
+                        style="margin-bottom: 20px; display: flex; justify-content: space-between;"
+                    >
+                        <span>权限别名：{{ currentModel.permAlias }}</span>
+                        <span>权限名称：{{ currentModel.permName }}</span>
+                    </el-row>
+                </div>
             </div>
         </el-card>
         <div>
@@ -119,6 +123,9 @@ export default {
                     let data = res.obj.data
                     // console.log(JSON.stringify(data))
                     this.treePage = this.loadDataByRecursive(data, 0)
+                    if (this.treePage.length > 0) {
+                        this.currentModel = this.treePage[0]
+                    }
                 })
                 .catch((error) => {
                     this.$message.error(error.message)
@@ -226,4 +233,8 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss">
+#tree {
+    width: 50%;
+}
+</style>

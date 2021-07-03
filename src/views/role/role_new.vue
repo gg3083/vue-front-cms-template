@@ -4,9 +4,9 @@
             <div slot="header">
                 <span>{{ title }}</span>
             </div>
-            <div style="display: flex;">
+            <div class="main-data">
                 <ul
-                    class="role-list"
+                    class="role-list box-shadow"
                     v-infinite-scroll="loadData"
                     infinite-scroll-disabled="disabled"
                     style="overflow:auto"
@@ -24,8 +24,23 @@
                         _____到底了_____
                     </p>
                 </ul>
-
-                <div class="role-show">
+                <div style="width: 30%" class="tree-content box-shadow">
+                    <el-tree
+                        :data="treePage"
+                        ref="tree"
+                        :default-expand-all="true"
+                        :highlight-current="true"
+                        :expand-on-click-node="false"
+                        node-key="id"
+                        :render-content="renderContent"
+                        show-checkbox
+                    >
+                    </el-tree>
+                    <div class="save-btn">
+                        <el-button type="primary" size="mini" @click="savePerm()">保存</el-button>
+                    </div>
+                </div>
+                <div class="role-show box-shadow" style="height: 100%;width: 30%;">
                     {{ currentModel }}
                 </div>
             </div>
@@ -34,16 +49,9 @@
 </template>
 
 <script>
-import { listRole, addRole, updateRole, deleteRole } from '@/api/role'
-import {
-    tableColumn,
-    searchFormColumn,
-    modelFormRules,
-    editModelFormColumn,
-    addModelFormColumn,
-    modelForm,
-    operateBtn,
-} from './role_data'
+import { listRole, addRole, updateRole, deleteRole, saveRolePerm, selectAllRolePerm } from '@/api/role'
+import { listPerm } from '@/api/permission'
+
 export default {
     name: 'role_new',
     data() {
@@ -53,25 +61,24 @@ export default {
             editFunc: updateRole,
             delFunc: deleteRole,
             addFunc: addRole,
-            tableColumn: tableColumn,
-            searchFormColumn,
             searchForm: {},
-            modelFormRules,
-            editModelFormColumn,
-            addModelFormColumn,
-            modelForm,
-            operateBtn,
             tableData: [],
-            currentModel: '',
+            currentModel: {},
             checkLi: false,
             currentPage: 1,
-            pageSize: 20,
+            pageSize: 25,
             loading: false,
             totals: 0,
+            treePage: [],
+            rolePermMap: '',
         }
     },
     created() {
-        this._getPageTab1(this.currentPage, this.pageSize)
+        this._selectAllRolePerm()
+        this._getPerm()
+    },
+    mounted() {
+        this._getPageTab1(this.currentPage, this.pageSize, true)
     },
     computed: {
         noMore() {
@@ -82,14 +89,15 @@ export default {
         },
     },
     methods: {
-        _getPageTab1(current, size) {
+        _getPageTab1(current, size, isFirst) {
             listRole({ pageNo: current, pageSize: size })
                 .then((res) => {
                     let data = res.obj.data
+                    if (isFirst) {
+                        this.clickCurrent(data[0])
+                    }
                     this.tableData = this.tableData.concat(data)
-                    console.log(this.tableData.length)
                     this.totals = res.obj.totals
-                    // this.treePage = this.loadDataByRecursive(data, 0)
                 })
                 .catch((error) => {
                     this.$message.error(error.message)
@@ -98,9 +106,18 @@ export default {
         clickCurrent(data) {
             this.currentModel = data
             this.checkLi = true
+            let checkPerm = this.rolePermMap.get(data.id)
+            this.$refs.tree.setCheckedKeys([])
+            if (checkPerm && checkPerm.length > 0) {
+                console.log(checkPerm.length)
+                this.$nextTick(() => {
+                    checkPerm.forEach((id) => {
+                        this.$refs.tree.setChecked(id, true, false)
+                    })
+                })
+            }
         },
         loadData() {
-            console.log('loadData')
             this.loading = true
             setTimeout(() => {
                 if (this.tableData.length / this.pageSize + 1 < this.currentPage) {
@@ -113,66 +130,167 @@ export default {
                 this.loading = false
             }, 2000)
         },
+        _getPerm() {
+            listPerm()
+                .then((res) => {
+                    let data = res.obj.data
+                    // console.log(JSON.stringify(data))
+                    this.treePage = this.loadDataByRecursive(data, 0)
+                })
+                .catch((error) => {
+                    this.$message.error(error.message)
+                })
+        },
+        loadDataByRecursive(treeNodes, parentId) {
+            let trees = []
+
+            treeNodes.forEach((item) => {
+                if (item.parentId === parentId) {
+                    trees.push(this.findChildren(item, treeNodes))
+                }
+            })
+            return trees
+        },
+        findChildren(node, treeNodes) {
+            treeNodes.forEach((item) => {
+                if (node.id === item.parentId) {
+                    if (!node.children) {
+                        node.children = []
+                    }
+                    node.children.push(this.findChildren(item, treeNodes))
+                }
+            })
+            return node
+        },
+        renderContent(h, { node, data, store }) {
+            console.log({ node, data, store })
+            return (
+                <div>
+                    <div className="custom-tree-node">
+                        <div>
+                            <span>
+                                {data.permName}_{data.permAlias}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        _selectAllRolePerm() {
+            selectAllRolePerm()
+                .then((res) => {
+                    if (res.code === 0) {
+                        let data = new Map()
+                        res.obj.forEach((item) => {
+                            data.set(item.roleId, item.premId)
+                        })
+                        console.log(data)
+                        this.rolePermMap = data
+                    }
+                })
+                .catch((error) => {
+                    this.$message.error(error.message)
+                })
+        },
+        savePerm() {
+            if (!this.$refs.tree.getCheckedNodes()) {
+                this.$message.error('未选择数据!')
+                return
+            }
+            let idList = this.$refs.tree.getCheckedNodes().map((item) => {
+                return item.id
+            })
+            if (idList.length === 0) {
+                this.$message.error('未选择数据2!')
+                return
+            }
+            console.log('---', idList)
+            saveRolePerm(this.currentModel.id, { permIdList: idList })
+                .then((res) => {
+                    if (res.code === 0) {
+                        this.$message.success('保存成功！')
+                        this.rolePermMap.set(this.currentModel.id, res.obj)
+                    }
+                })
+                .catch((error) => {
+                    this.$message.error(error.message)
+                })
+        },
     },
 }
 </script>
 
-<style scoped>
-.role-list {
-    width: 200px;
-    height: 500px;
-}
-.role-list li {
-    width: 180px;
-    /*background: #8c939d;*/
-    margin-bottom: 10px;
-    text-align: center;
-    height: 30px;
-    font-size: 14px;
-}
-.role-list li:hover {
-    color: #409eff !important;
-}
+<style lang="scss">
+.main-data {
+    display: flex;
+    justify-content: space-between;
 
-.role-item-active {
-    color: #409eff !important;
-}
+    .role-list {
+        margin-top: 10px;
+        width: 200px;
+        height: 1000px;
+        li {
+            width: 180px;
+            /*background: #8c939d;*/
+            margin-bottom: 10px;
+            text-align: center;
+            height: 30px;
+            font-size: 14px;
+        }
+        li:hover {
+            color: #409eff !important;
+        }
+        .role-item-active {
+            color: #409eff !important;
+        }
+        /*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
+        &::-webkit-scrollbar {
+            width: 5px; /*对垂直滚动条有效*/
+            height: 1px; /*对水平滚动条有效*/
+            /*display: none;*/
+        }
+        /*定义滚动条的轨道颜色、内阴影及圆角*/
+        &::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px #ececec;
+            background-color: #ececec;
+            display: none;
+            border-radius: 3px;
+        }
 
-/*定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸*/
-.role-list::-webkit-scrollbar {
-    width: 5px; /*对垂直滚动条有效*/
-    height: 1px; /*对水平滚动条有效*/
-    /*display: none;*/
-}
+        /*定义滑块颜色、内阴影及圆角*/
+        &::-webkit-scrollbar-thumb {
+            border-radius: 7px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0, 0.1);
+            display: none;
+        }
 
-/*定义滚动条的轨道颜色、内阴影及圆角*/
-.role-list::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px #ececec;
-    background-color: #ececec;
-    display: none;
-    border-radius: 3px;
-}
+        /* 光标移到滚动滑块上样式颜色变深 */
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
 
-/*定义滑块颜色、内阴影及圆角*/
-.role-list::-webkit-scrollbar-thumb {
-    border-radius: 7px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background-color: rgba(0, 0, 0, 0.1);
-    display: none;
-}
+        /*定义两端按钮的样式*/
+        /*::-webkit-scrollbar-button {*/
+        /*    background-color: cyan;*/
+        /*}*/
 
-/* 光标移到滚动滑块上样式颜色变深 */
-.role-list::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-}
+        /*定义右下角汇合处的样式*/
+        &::-webkit-scrollbar-corner {
+            background: khaki;
+        }
+    }
+    .tree-content {
+        width: 33%;
+        padding: 10px;
+        margin: 10px;
+        position: relative;
 
-/*定义两端按钮的样式*/
-/*.role-list::-webkit-scrollbar-button {*/
-/*    background-color: cyan;*/
-/*}*/
-
-/*定义右下角汇合处的样式*/
-.role-list::-webkit-scrollbar-corner {
-    background: khaki;
+        .save-btn {
+            position: absolute !important;
+            bottom: 10px;
+            right: 10px;
+        }
+    }
 }
 </style>

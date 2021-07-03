@@ -27,6 +27,10 @@ export const tableColumn = [
         label: '电话',
     },
     {
+        prop: 'roleName',
+        label: '权限',
+    },
+    {
         prop: 'email',
         label: '邮箱',
     },
@@ -129,6 +133,14 @@ export const editModelFormColumn = [
         ],
         placeholder: '请选择性别',
     },
+    {
+        prop: 'roleId',
+        label: '权限',
+        value: '',
+        type: 'select',
+        typeData: [],
+        placeholder: '请选择权限',
+    },
 ]
 
 export const modelForm = {
@@ -144,6 +156,8 @@ export const modelForm = {
     realName: { label: '', value: '' },
     loginName: { label: '', value: '' },
     telephone: { label: '', value: '' },
+    roleName: { label: '', value: '' },
+    roleId: { label: '', value: '', type: Number },
 }
 
 export const modelFormRules = {
@@ -184,5 +198,18 @@ export const addModelFormColumn = [
             },
         ],
         placeholder: '请选择性别',
+    },
+    {
+        prop: 'roleId',
+        label: '权限',
+        value: '',
+        type: 'select',
+        typeData: [
+            {
+                label: '男',
+                value: 0,
+            },
+        ],
+        placeholder: '请选择权限',
     },
 ]

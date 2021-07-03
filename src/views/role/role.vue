@@ -14,6 +14,7 @@
             :add-model-form-column="addModelFormColumn"
             :model-form="modelForm"
             :operate-btn="operateBtn"
+            :set-page-size="20"
         >
         </SimplePage>
     </div>

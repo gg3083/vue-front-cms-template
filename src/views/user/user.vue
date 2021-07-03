@@ -23,6 +23,8 @@
 <script>
 import SimplePage from '@/views/components/simple_page'
 import { listUser, addUser, updateUser, resetPwd, deleteUser } from '@/api/user'
+import { listRole } from '@/api/role'
+
 import {
     tableColumn,
     searchFormColumn,
@@ -52,9 +54,12 @@ export default {
             addModelFormColumn,
             modelForm,
             operateBtn,
+            typeSelectData: [],
         }
     },
-    created() {},
+    created() {
+        this.getRoleAll()
+    },
     mounted() {},
     methods: {
         restPassWord(args) {
@@ -81,6 +86,42 @@ export default {
                 .catch(() => {
                     this.$message.info('取消重置')
                 })
+        },
+        getRoleAll() {
+            listRole({ pageNo: 1, pageSize: 499 })
+                .then((res) => {
+                    console.log(res.obj.data)
+                    this.typeSelectData = res.obj.data
+                    this.setSelectRoleData(res.obj.data)
+                })
+                .catch((error) => {
+                    console.log(error.message)
+                })
+        },
+
+        setSelectRoleData(data) {
+            this.addModelFormColumn.forEach((item) => {
+                if (item.prop === 'roleId') {
+                    item.typeData = []
+                    data.forEach((result) => {
+                        item.typeData.push({
+                            label: result.roleName,
+                            value: result.id,
+                        })
+                    })
+                }
+            })
+            this.editModelFormColumn.forEach((item) => {
+                if (item.prop === 'roleId') {
+                    item.typeData = []
+                    data.forEach((result) => {
+                        item.typeData.push({
+                            label: result.roleName,
+                            value: result.id,
+                        })
+                    })
+                }
+            })
         },
     },
 }

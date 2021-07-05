@@ -20,7 +20,10 @@
                         {{ data.roleName }} : {{ data.roleAlias }}
                     </li>
                     <p v-if="loading" style="width: 180px; text-align: center">加载中...</p>
-                    <p v-if="noMore" style="width: 180px; text-align: center; font-size: 8px;color: #99a9bf;">
+                    <p
+                        v-if="noMore && tableData.length > pageSize"
+                        style="width: 180px; text-align: center; font-size: 8px;color: #99a9bf;"
+                    >
                         _____到底了_____
                     </p>
                 </ul>
@@ -53,7 +56,7 @@ import { listRole, addRole, updateRole, deleteRole, saveRolePerm, selectAllRoleP
 import { listPerm } from '@/api/permission'
 
 export default {
-    name: 'role_new',
+    name: 'role_set',
     data() {
         return {
             title: '角色管理',
@@ -77,9 +80,7 @@ export default {
         this._selectAllRolePerm()
         this._getPerm()
     },
-    mounted() {
-        this._getPageTab1(this.currentPage, this.pageSize, true)
-    },
+    mounted() {},
     computed: {
         noMore() {
             return this.tableData.length >= this.totals
@@ -184,8 +185,8 @@ export default {
                         res.obj.forEach((item) => {
                             data.set(item.roleId, item.premId)
                         })
-                        console.log(data)
                         this.rolePermMap = data
+                        this._getPageTab1(this.currentPage, this.pageSize, true)
                     }
                 })
                 .catch((error) => {
@@ -228,7 +229,8 @@ export default {
     .role-list {
         margin-top: 10px;
         width: 200px;
-        height: 1000px;
+        min-height: calc(100vh - 200px);
+        margin-bottom: 10px;
         li {
             width: 180px;
             /*background: #8c939d;*/

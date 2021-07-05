@@ -112,16 +112,34 @@ export const asyncRoutes = [
                 meta: { title: '角色管理' },
             },
             {
-                path: 'role_new',
-                name: 'RoleUser',
-                component: () => import('@/views/role/role_new'),
-                meta: { title: '角色_管理' },
+                path: 'role_setting',
+                name: 'RoleSet',
+                component: () => import('@/views/role/role_set'),
+                meta: { title: '角色设置' },
             },
             {
                 path: 'permission_',
                 name: 'PermissionUser',
                 component: () => import('@/views/permission/permission'),
                 meta: { title: '权限管理' },
+            },
+        ],
+    },
+    {
+        path: '/order',
+        name: 'Order',
+        redirect: '/order/alipay-order',
+        component: Layout,
+        meta: {
+            title: 'Order',
+            icon: 'el-icon-s-order',
+        },
+        children: [
+            {
+                path: 'alipay-order',
+                name: 'AlipayOrder',
+                component: () => import('@/views/order/alipay_order.vue'),
+                meta: { title: '支付宝订单' },
             },
         ],
     },

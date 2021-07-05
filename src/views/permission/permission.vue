@@ -31,7 +31,7 @@
             </div>
         </el-card>
         <div>
-            <el-dialog title="修改" :visible.sync="editDialog" width="30%">
+            <el-dialog title="修改" :visible.sync="editDialog" width="30%" :close-on-click-modal="false">
                 <div>
                     <el-form ref="editForm" :rules="modelFormRules" :model="editModelForm" label-width="120px">
                         <el-form-item label="权限别称" prop="permAlias">
@@ -167,9 +167,12 @@ export default {
             if (!data.children) {
                 this.$set(data, 'children', [])
             }
-            data.children.push(newChild)
             addPerm(newChild)
                 .then((res) => {
+                    if (res.code === 0) {
+                        newChild.id = res.obj
+                        data.children.push(newChild)
+                    }
                     console.log(res)
                 })
                 .catch((res) => {

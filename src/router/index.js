@@ -152,6 +152,24 @@ export function resetRouter() {
     router.matcher = reset.matcher
 }
 
+function checkToken(res) {
+    console.log('error', res)
+    // 过期
+    if (res.errorCode === '1001') {
+        console.log('token过期')
+        store.dispatch('user/_refreshToken')
+    }
+    // 失效
+    if (res.errorCode === '1002' || res.errorCode === '1003') {
+        console.log('res', res)
+        localStorage.removeItem('token')
+        next({
+            path: '/login',
+        })
+    }
+    console.log('end')
+}
+
 // 导航守卫
 router.beforeEach(async (to, from, next) => {
     document.title = getTitle(to.meta.title)
@@ -165,26 +183,26 @@ router.beforeEach(async (to, from, next) => {
                 next()
             } else {
                 try {
-                    // console.log('开始获取权限')
-                    const res = await store.dispatch('user/_getInfo')
-                    // console.log('roles', res)
-                    // 过期
-                    if (res.errorCode === '502') {
-                        await store.dispatch('user/_refreshToken')
-                    }
-                    // 失效
-                    if (res.errorCode === '503') {
-                        Message.error(res.message)
-                        localStorage.removeItem('token')
-                        next({
-                            path: '/login',
-                            query: {
-                                redirect: to.fullPath,
-                            },
-                        })
-                    }
+                    console.log('开始获取权限')
+                    const res = await store.dispatch('user/_getInfo').catch((error) => {
+                        console.log('error', error)
+                        // 过期
+                        if (error.errorCode === '1001') {
+                            console.log('token过期')
+                            store.dispatch('user/_refreshToken')
+                        }
+                        // 失效
+                        if (error.errorCode === '1002' || error.errorCode === '1003') {
+                            console.log('res', error)
+                            localStorage.removeItem('token')
+                            next({
+                                path: '/login',
+                            })
+                        }
+                        console.log('end')
+                    })
+                    console.log('roles', res)
                     const addRoutes = await store.dispatch('permission/getAsyncRoutes', asyncRoutes)
-                    console.log('add', addRoutes)
                     router.addRoutes(addRoutes)
 
                     // hack method to ensure that addRoutes is complete

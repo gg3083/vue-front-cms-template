@@ -168,8 +168,8 @@
                             </span>
                         </el-form-item>
                         <el-form-item>
-                            <el-button @click="addDialog = false">取消</el-button>
-                            <el-button type="primary" @click="addModelFunc('addForm')">保存</el-button>
+                            <el-button @click="addDialog = false" size="mini">取消</el-button>
+                            <el-button type="primary" size="mini" @click="addModelFunc('addForm')">保存</el-button>
                         </el-form-item>
                     </el-form>
                 </div>

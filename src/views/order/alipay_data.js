@@ -83,4 +83,10 @@ export const editModelFormColumn = []
 
 export const modelFormRules = {}
 
-export const addModelFormColumn = []
+export const addModelFormColumn = [
+    {
+        prop: 'outTradeNo',
+        label: '测试添加权限',
+        value: '',
+    },
+]

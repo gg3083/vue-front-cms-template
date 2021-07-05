@@ -19,7 +19,7 @@
 
 <script>
 import SimplePage from '@/views/components/simple_page'
-import { listAlipayOrder } from '@/api/order'
+import { listAlipayOrder, addAlipayOrder } from '@/api/order'
 import {
     tableColumn,
     searchFormColumn,
@@ -38,7 +38,7 @@ export default {
         return {
             title: '角色管理',
             fetchFunc: listAlipayOrder,
-            addFunc: listAlipayOrder,
+            addFunc: addAlipayOrder,
             tableColumn: tableColumn,
             searchFormColumn,
             searchForm: {},

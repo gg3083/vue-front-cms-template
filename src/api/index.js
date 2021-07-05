@@ -41,14 +41,17 @@ $axios.interceptors.response.use(
             if (response.data.code === 0) {
                 return Promise.resolve(response.data)
             } else {
-                if (response.data.errorCode === '502' || response.data.errorCode === '503') {
+                if (response.data.errorCode === '1002' || response.data.errorCode === '1003') {
+                    localStorage.removeItem('token')
+                    window.location.reload()
                     return Promise.resolve(response.data)
                 }
                 console.log(response.data.message)
                 Message.error(response.data.message)
+                return Promise.reject(response.data)
             }
         } else {
-            return Promise.reject(response)
+            return Promise.reject(response.data)
         }
     },
     (error) => {

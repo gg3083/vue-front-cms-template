@@ -35,7 +35,6 @@
 export default {
     data() {
         return {
-            notifyObj: null,
             ruleForm: {
                 username: 'admin',
                 password: '123456',
@@ -65,11 +64,7 @@ export default {
                 .dispatch('user/_login', this.ruleForm)
                 .then(() => {
                     this.$message.success('登录成功！')
-                    this.$router.push(this.$route.query.redirect)
-                    if (this.notifyObj) {
-                        this.notifyObj.close()
-                    }
-                    this.notifyObj = null
+                    this.$router.push('/')
                 })
                 .catch((error) => {
                     this.$message.error(error)

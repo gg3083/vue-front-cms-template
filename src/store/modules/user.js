@@ -38,8 +38,6 @@ const actions = {
                 .then((res) => {
                     console.log(res)
                     if (res.code === 0) {
-                        console.log(document.cookie)
-                        console.log(res.obj.token)
                         commit('SET_TOKEN', res.obj.token)
                         //
                         // commit('SET_ROLES', res.obj.roleAlias)
@@ -69,25 +67,22 @@ const actions = {
                 .then((res) => {
                     if (res.code === 0) {
                         const { loginName, realName, permList } = res.obj
-                        console.log({ loginName, realName, permList })
                         commit('SET_ROLES', permList)
                         commit('SET_NAME', loginName)
                         commit('SET_INTRODUCE', realName)
                     } else {
-                        if (!(res.errorCode === '502' || res.errorCode === '503')) {
-                            Message.error(res.msg)
-                        }
-                        commit('SET_ROLES', ['LOGIN'])
+                        console.log('reject', res)
+                        reject(res)
                     }
                     resolve(res)
                 })
                 .catch((error) => {
+                    console.log('reject error', error)
                     reject(error)
                 })
         })
     },
     _refreshToken({ commit }) {
-        console.log('开始刷新token')
         return new Promise((resolve, reject) => {
             refreshToken()
                 .then((res) => {

@@ -194,11 +194,11 @@ export default {
                 })
         },
         savePerm() {
-            if (!this.$refs.tree.getCheckedNodes()) {
+            if (!this.$refs.tree.getCheckedNodes(false, true)) {
                 this.$message.error('未选择数据!')
                 return
             }
-            let idList = this.$refs.tree.getCheckedNodes().map((item) => {
+            let idList = this.$refs.tree.getCheckedNodes(false, true).map((item) => {
                 return item.id
             })
             if (idList.length === 0) {

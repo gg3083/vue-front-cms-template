@@ -62,87 +62,6 @@ export const currencyRoutes = [
             },
         ],
     },
-]
-/*动态添加routers*/
-export const asyncRoutes = [
-    // {
-    //     path: '/table',
-    //     name: 'Table',
-    //     redirect: '/table/base-table',
-    //     component: Layout,
-    //     meta: {
-    //         title: 'Table',
-    //         icon: 'el-icon-table iconfont',
-    //     },
-    //     children: [
-    //         {
-    //             path: 'base-table',
-    //             name: 'BaseTable',
-    //             component: () => import('@/views/table/common-table'),
-    //             meta: { title: '普通表格' },
-    //         },
-    //         {
-    //             path: 'complex-table',
-    //             name: 'ComplexTable',
-    //             component: () => import('@/views/table/complex-table'),
-    //             meta: { title: '复杂表格' },
-    //         },
-    //     ],
-    // },
-    {
-        path: '/user',
-        name: 'User',
-        redirect: '/user/base-user',
-        component: Layout,
-        meta: {
-            title: 'User',
-            icon: 'el-icon-user',
-        },
-        children: [
-            {
-                path: 'user_',
-                name: 'UserList',
-                component: () => import('@/views/user/user.vue'),
-                meta: { title: '用户管理' },
-            },
-            {
-                path: 'role_',
-                name: 'RoleUser',
-                component: () => import('@/views/role/role'),
-                meta: { title: '角色管理' },
-            },
-            {
-                path: 'role_setting',
-                name: 'RoleSet',
-                component: () => import('@/views/role/role_set'),
-                meta: { title: '角色设置' },
-            },
-            {
-                path: 'permission_',
-                name: 'PermissionUser',
-                component: () => import('@/views/permission/permission'),
-                meta: { title: '权限管理' },
-            },
-        ],
-    },
-    {
-        path: '/order',
-        name: 'Order',
-        redirect: '/order/alipay-order',
-        component: Layout,
-        meta: {
-            title: 'Order',
-            icon: 'el-icon-s-order',
-        },
-        children: [
-            {
-                path: 'alipay-order',
-                name: 'AlipayOrder',
-                component: () => import('@/views/order/alipay_order.vue'),
-                meta: { title: '支付宝订单' },
-            },
-        ],
-    },
     {
         path: '/error',
         component: Layout,
@@ -158,17 +77,62 @@ export const asyncRoutes = [
             },
         ],
     },
+]
+/*动态添加routers*/
+export const asyncRoutes = [
     {
-        path: 'https://github.com/gcddblue/vue-admin-webapp',
-        name: 'Github',
-        hidden: true,
-        meta: { icon: 'el-icon-link', title: '项目链接' },
+        path: '/system_manager',
+        name: 's:system:menu',
+        redirect: '/system_manager/user',
+        component: Layout,
+        meta: {
+            title: '系统权限',
+            icon: 'el-icon-s-tools',
+        },
+        children: [
+            {
+                path: 'user',
+                name: 's:system:sys_user:menu',
+                component: () => import('@/views/user/user.vue'),
+                meta: { title: '用户管理' },
+            },
+            {
+                path: 'role',
+                name: 's:system:sys_role:menu',
+                component: () => import('@/views/role/role'),
+                meta: { title: '角色管理' },
+            },
+            {
+                path: 'role_setting',
+                name: 's:system:sys_role_set:menu',
+                component: () => import('@/views/role/role_set'),
+                meta: { title: '角色设置' },
+            },
+            {
+                path: 'permission',
+                name: 's:system:sys_perm:menu',
+                component: () => import('@/views/permission/permission'),
+                meta: { title: '权限管理' },
+            },
+        ],
     },
     {
-        path: '*',
-        name: '*404',
-        redirect: '/404',
-        hidden: true,
+        path: '/order',
+        name: 's:order:menu',
+        redirect: '/order/alipay_order',
+        component: Layout,
+        meta: {
+            title: 'Order',
+            icon: 'el-icon-s-order',
+        },
+        children: [
+            {
+                path: 'alipay_order',
+                name: 's:order:alipay_order:menu',
+                component: () => import('@/views/order/alipay_order.vue'),
+                meta: { title: '支付宝订单' },
+            },
+        ],
     },
 ]
 const creatRouter = () => {
@@ -219,20 +183,8 @@ router.beforeEach(async (to, from, next) => {
                             },
                         })
                     }
-                    //TODO 获取菜单，按钮权限
-                    let roles = [
-                        'Home',
-                        'Dashbord',
-                        'Login',
-                        '404',
-                        'User',
-                        'Table',
-                        'BaseUser',
-                        'RoleUser',
-                        'UserList',
-                    ]
-                    const addRoutes = await store.dispatch('permission/getAsyncRoutes', roles)
-                    // console.log('add', addRoutes)
+                    const addRoutes = await store.dispatch('permission/getAsyncRoutes', asyncRoutes)
+                    console.log('add', addRoutes)
                     router.addRoutes(addRoutes)
 
                     // hack method to ensure that addRoutes is complete

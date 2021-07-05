@@ -68,8 +68,9 @@ const actions = {
             getInfo()
                 .then((res) => {
                     if (res.code === 0) {
-                        const { loginName, realName, roleAlias } = res.obj
-                        commit('SET_ROLES', [roleAlias])
+                        const { loginName, realName, permList } = res.obj
+                        console.log({ loginName, realName, permList })
+                        commit('SET_ROLES', permList)
                         commit('SET_NAME', loginName)
                         commit('SET_INTRODUCE', realName)
                     } else {

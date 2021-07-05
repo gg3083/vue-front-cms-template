@@ -3,8 +3,6 @@
         <SimplePage
             :title="title"
             :fetch-func="fetchFunc"
-            :edit-func="editFunc"
-            :del-func="delFunc"
             :add-func="addFunc"
             :table-column="tableColumn"
             :search-form-column="searchFormColumn"

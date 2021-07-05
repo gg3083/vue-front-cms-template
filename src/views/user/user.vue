@@ -63,7 +63,6 @@ export default {
     mounted() {},
     methods: {
         restPassWord(args) {
-            console.log('restEmit', args)
             this.$confirm('确定要重置该用户的密码吗', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -90,7 +89,6 @@ export default {
         getRoleAll() {
             listRole({ pageNo: 1, pageSize: 499 })
                 .then((res) => {
-                    console.log(res.obj.data)
                     this.typeSelectData = res.obj.data
                     this.setSelectRoleData(res.obj.data)
                 })

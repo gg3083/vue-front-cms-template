@@ -315,7 +315,6 @@ export default {
                 this.editModelForm[item].label = item
             }
         }
-        console.log(this.addModelFormColumn)
     },
     methods: {
         handleSize(val) {

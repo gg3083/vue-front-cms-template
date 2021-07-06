@@ -5,7 +5,7 @@
                 <span>{{ title }}</span>
             </div>
             <el-row>
-                <div id="search-key">
+                <div id="search-key" v-if="operateBtn.length > 0">
                     <span>搜索条件：</span>
                     <el-form ref="searchForm" :model="searchForm" label-width="80px" size="mini" inline>
                         <el-form-item
@@ -37,9 +37,13 @@
                                 :key="key"
                                 v-for="(btn, key) in operateBtn"
                                 :type="btn.type"
-                                @click.native="dynamicFunc(btn.clickFunc, btn.args)"
-                                >{{ btn.label }}</el-button
-                            >
+                                @click.native="dynamicFunc(btn.clickFunc, btn.args, btn.permKey)"
+                                >{{ btn.label
+                                }}<i
+                                    class="el-icon-lock el-icon--right"
+                                    v-show="btn.permKey && !$store.state.user.roles.includes(btn.permKey)"
+                                ></i
+                            ></el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -89,7 +93,9 @@
                                     :key="key"
                                     v-for="(viewBtn, key) in col.btnData"
                                     :button-item="viewBtn"
-                                    @clickFunc="getRowData(scope.row, index, viewBtn.btnKey, viewBtn.emit)"
+                                    @clickFunc="
+                                        getRowData(scope.row, index, viewBtn.btnKey, viewBtn.emit, viewBtn.permKey)
+                                    "
                                 />
                             </div>
                             <div v-else>
@@ -344,10 +350,17 @@ export default {
                     this.$message.error(error.message)
                 })
         },
-        getRowData(row, index, type, emit) {
+        getRowData(row, index, type, emit, permKey) {
             console.log(row, index, type, emit)
+            if (permKey) {
+                if (!this.$store.state.user.roles.includes(permKey)) {
+                    this.$message.error('无权操作！')
+                    return
+                }
+            }
             if (emit) {
                 this.$emit(emit, row)
+                return
             }
             switch (type) {
                 case 'editBtn':
@@ -376,7 +389,10 @@ export default {
                             this.delFunc(row.id)
                                 .then((res) => {
                                     if (res.code === 0) {
-                                        this.tablePage.splice(this.tablePage.findIndex((item) => item.id === row.id), 1)
+                                        this.tablePage.splice(
+                                            this.tablePage.findIndex((item) => item.id === row.id),
+                                            1
+                                        )
                                         this.$message.success('删除成功')
                                     } else {
                                         this.$message.error(res.message)
@@ -468,9 +484,15 @@ export default {
         showAddModel() {
             this.addDialog = true
         },
-        dynamicFunc(method, args) {
-            console.log(method)
+        dynamicFunc(method, args, permKey) {
+            console.log(method, args, permKey)
             if (method) {
+                if (permKey) {
+                    if (!this.$store.state.user.roles.includes(permKey)) {
+                        this.$message.error('无权操作！')
+                        return
+                    }
+                }
                 try {
                     if (args && args.length > 0) {
                         this[method](...args)

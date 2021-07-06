@@ -47,7 +47,15 @@ export const tableColumn = [
         prop: 'operate',
         label: '操作',
         width: '400px',
-        btnData: [{ btnKey: 'viewBtn', btnText: '查看', btnType: 'info', round: true }],
+        btnData: [
+            {
+                btnKey: 'viewBtn',
+                btnText: '查看',
+                btnType: 'info',
+                round: true,
+                permKey: 's:order:alipay_order:btn_query:btn',
+            },
+        ],
     },
 ]
 
@@ -64,6 +72,7 @@ export const operateBtn = [
         type: 'primary',
         size: 'mini',
         clickFunc: 'showAddModel',
+        permKey: 's:order:alipay_order:btn_add:btn',
     },
 ]
 

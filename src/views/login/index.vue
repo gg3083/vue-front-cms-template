@@ -64,6 +64,7 @@ export default {
                 .dispatch('user/_login', this.ruleForm)
                 .then(() => {
                     this.$message.success('登录成功！')
+                    console.log(this.$router.currentRoute.fullPath)
                     this.$router.push('/')
                 })
                 .catch((error) => {

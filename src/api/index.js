@@ -41,14 +41,22 @@ $axios.interceptors.response.use(
             if (response.data.code === 0) {
                 return Promise.resolve(response.data)
             } else {
+                console.log(response.data)
                 if (response.data.errorCode === '1002' || response.data.errorCode === '1003') {
+                    Message.error(response.data.message)
                     localStorage.removeItem('token')
-                    window.location.reload()
-                    return Promise.resolve(response.data)
+                    router.replace({
+                        path: '/login',
+                        query: {
+                            redirect: router.currentRoute.fullPath,
+                        },
+                    })
+                    return Promise.reject(response.data)
+                } else {
+                    console.log(response)
+                    Message.error(response.data.message)
+                    return Promise.reject(response.data)
                 }
-                console.log(response.data.message)
-                Message.error(response.data.message)
-                return Promise.reject(response.data)
             }
         } else {
             return Promise.reject(response.data)

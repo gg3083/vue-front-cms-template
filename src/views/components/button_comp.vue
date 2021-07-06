@@ -10,7 +10,11 @@
         :icon="buttonItem.icon || ''"
         @click="btnClick"
     >
-        {{ buttonItem.btnText }}
+        {{ buttonItem.btnText
+        }}<i
+            class="el-icon-lock el-icon--right"
+            v-show="buttonItem.permKey && !$store.state.user.roles.includes(buttonItem.permKey)"
+        ></i>
     </el-button>
 </template>
 

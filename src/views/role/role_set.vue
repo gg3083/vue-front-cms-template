@@ -6,7 +6,7 @@
             </div>
             <div class="main-data">
                 <ul
-                    class="role-list box-shadow"
+                    class="role-list"
                     v-infinite-scroll="loadData"
                     infinite-scroll-disabled="disabled"
                     style="overflow:auto"
@@ -69,7 +69,7 @@ export default {
             currentModel: {},
             checkLi: false,
             currentPage: 1,
-            pageSize: 25,
+            pageSize: 30,
             loading: false,
             totals: 0,
             treePage: [],
@@ -83,9 +83,11 @@ export default {
     mounted() {},
     computed: {
         noMore() {
+            console.log('没有啦！', this.tableData.length, this.totals)
             return this.tableData.length >= this.totals
         },
         disabled() {
+            console.log('加载中！')
             return this.loading || this.noMore
         },
     },
@@ -110,7 +112,6 @@ export default {
             let checkPerm = this.rolePermMap.get(data.id)
             this.$refs.tree.setCheckedKeys([])
             if (checkPerm && checkPerm.length > 0) {
-                console.log(checkPerm.length)
                 this.$nextTick(() => {
                     checkPerm.forEach((id) => {
                         this.$refs.tree.setChecked(id, true, false)
@@ -163,8 +164,9 @@ export default {
             })
             return node
         },
+        // eslint-disable-next-line no-unused-vars
         renderContent(h, { node, data, store }) {
-            console.log({ node, data, store })
+            // console.log({ node, data, store })
             return (
                 <div>
                     <div className="custom-tree-node">
@@ -205,7 +207,6 @@ export default {
                 this.$message.error('未选择数据2!')
                 return
             }
-            console.log('---', idList)
             saveRolePerm(this.currentModel.id, { permIdList: idList })
                 .then((res) => {
                     if (res.code === 0) {
@@ -229,7 +230,8 @@ export default {
     .role-list {
         margin-top: 10px;
         width: 200px;
-        min-height: calc(100vh - 200px);
+        //min-height: calc(100vh - 200px);
+        height: 1100px;
         margin-bottom: 10px;
         li {
             width: 180px;
@@ -249,7 +251,7 @@ export default {
         &::-webkit-scrollbar {
             width: 5px; /*对垂直滚动条有效*/
             height: 1px; /*对水平滚动条有效*/
-            /*display: none;*/
+            //display: none;
         }
         /*定义滚动条的轨道颜色、内阴影及圆角*/
         &::-webkit-scrollbar-track {
@@ -264,7 +266,7 @@ export default {
             border-radius: 7px;
             -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
             background-color: rgba(0, 0, 0, 0.1);
-            display: none;
+            //display: none;
         }
 
         /* 光标移到滚动滑块上样式颜色变深 */
@@ -273,14 +275,18 @@ export default {
         }
 
         /*定义两端按钮的样式*/
-        /*::-webkit-scrollbar-button {*/
-        /*    background-color: cyan;*/
-        /*}*/
+        //&::-webkit-scrollbar-button {
+        //    background-color: cyan;
+        //}
 
         /*定义右下角汇合处的样式*/
         &::-webkit-scrollbar-corner {
             background: khaki;
         }
+        //&::-webkit-scrollbar {
+        //    display: none;
+        //}
+        //-ms-overflow-style: none;
     }
     .tree-content {
         width: 33%;

@@ -1,5 +1,5 @@
 import { login, getInfo, refreshToken } from '@/api/user'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import router, { resetRouter } from '@/router'
 
 const state = {

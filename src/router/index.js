@@ -122,7 +122,7 @@ export const asyncRoutes = [
         redirect: '/order/alipay_order',
         component: Layout,
         meta: {
-            title: 'Order',
+            title: '订单',
             icon: 'el-icon-s-order',
         },
         children: [
@@ -131,6 +131,24 @@ export const asyncRoutes = [
                 name: 's:order:alipay_order:menu',
                 component: () => import('@/views/order/alipay_order.vue'),
                 meta: { title: '支付宝订单' },
+            },
+        ],
+    },
+    {
+        path: '/tools',
+        name: 's:tools:menu',
+        redirect: '/tools/oss',
+        component: Layout,
+        meta: {
+            title: '常用工具',
+            icon: 'el-icon-s-order',
+        },
+        children: [
+            {
+                path: 'oss',
+                name: 's:tools:oss:menu',
+                component: () => import('@/views/tools/oss/index.vue'),
+                meta: { title: '阿里云oss' },
             },
         ],
     },
@@ -150,24 +168,6 @@ const router = creatRouter()
 export function resetRouter() {
     const reset = creatRouter()
     router.matcher = reset.matcher
-}
-
-function checkToken(res) {
-    console.log('error', res)
-    // 过期
-    if (res.errorCode === '1001') {
-        console.log('token过期')
-        store.dispatch('user/_refreshToken')
-    }
-    // 失效
-    if (res.errorCode === '1002' || res.errorCode === '1003') {
-        console.log('res', res)
-        localStorage.removeItem('token')
-        next({
-            path: '/login',
-        })
-    }
-    console.log('end')
 }
 
 // 导航守卫
@@ -198,6 +198,7 @@ router.beforeEach(async (to, from, next) => {
                             next({
                                 path: '/login',
                             })
+                            return
                         }
                         console.log('end')
                     })

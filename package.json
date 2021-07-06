@@ -9,11 +9,12 @@
   },
   "dependencies": {
     "animate.css": "^3.7.2",
+    "ali-oss": "^6.15.2",
     "axios": "^0.18.1",
     "core-js": "^2.6.5",
     "driver.js": "^0.9.7",
     "echarts": "^4.2.1",
-    "element-ui": "^2.4.5",
+    "element-ui": "^2.13.2",
     "file-saver": "^2.0.2",
     "qs": "^6.10.1",
     "screenfull": "^4.2.0",

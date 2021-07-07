@@ -150,6 +150,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/tools/oss/index.vue'),
                 meta: { title: '阿里云oss' },
             },
+            {
+                path: 'generate',
+                name: 's:tools:generate:menu',
+                component: () => import('@/views/tools/code_generate/js_code_generate.vue'),
+                meta: { title: '代码生成' },
+            },
         ],
     },
 ]
@@ -202,6 +208,9 @@ router.beforeEach(async (to, from, next) => {
                         }
                         console.log('end')
                     })
+                    if (!res) {
+                        throw new Error('权限获取为空')
+                    }
                     console.log('roles', res)
                     const addRoutes = await store.dispatch('permission/getAsyncRoutes', asyncRoutes)
                     router.addRoutes(addRoutes)

@@ -42,6 +42,7 @@ import {
     CarouselItem,
     InputNumber,
     Drawer,
+    Checkbox,
     Loading,
 } from 'element-ui'
 Message.install = () => {
@@ -96,3 +97,4 @@ Vue.use(InputNumber)
 Vue.use(Loading)
 Vue.use(InfiniteScroll)
 Vue.use(Drawer)
+Vue.use(Checkbox)

@@ -43,6 +43,7 @@ import {
     InputNumber,
     Drawer,
     Checkbox,
+    CheckboxGroup,
     Loading,
 } from 'element-ui'
 Message.install = () => {
@@ -98,3 +99,4 @@ Vue.use(Loading)
 Vue.use(InfiniteScroll)
 Vue.use(Drawer)
 Vue.use(Checkbox)
+Vue.use(CheckboxGroup)

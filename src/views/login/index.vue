@@ -1,31 +1,41 @@
 <template>
     <div class="login">
-        <div class="loginBox">
-            <h2 class="loginH2"><strong>Vue</strong> 后台管理系统</h2>
-            <div class="loginCon">
-                <div class="titleDiv">
-                    <h3>Sign up now</h3>
-                    <p>Enter your username and password to log on:</p>
-                    <i class="el-icon-key"></i>
+        <div class="content ">
+            <div class="logo_container fr">
+                <div class="title clearfix">
+                    <p class="fl m-1"><a href="">快速登录</a></p>
+                    <p class="fl m-2"><a href="">帐号密码登录</a></p>
                 </div>
-                <el-form ref="loginForm" :rules="rules" :model="ruleForm">
-                    <el-form-item prop="username">
-                        <el-input
-                            placeholder="请输入账号"
-                            prefix-icon="el-icon-user"
-                            v-model="ruleForm.username"
-                        ></el-input>
-                    </el-form-item>
-                    <el-form-item prop="password">
-                        <el-input
-                            placeholder="请输入密码"
-                            prefix-icon="el-icon-lock"
-                            v-model="ruleForm.password"
-                            show-password
-                        ></el-input>
-                    </el-form-item>
-                    <el-button type="primary" class="loginBtn" @click="loginYz('loginForm')">登录</el-button>
-                </el-form>
+                <div class="form">
+                    <el-form ref="loginForm" :rules="rules" :model="ruleForm">
+                        <el-form-item prop="username">
+                            <el-input
+                                placeholder="请输入账号"
+                                prefix-icon="el-icon-user"
+                                v-model="ruleForm.username"
+                            ></el-input>
+                        </el-form-item>
+                        <el-form-item prop="password">
+                            <el-input
+                                placeholder="请输入密码"
+                                prefix-icon="el-icon-lock"
+                                v-model="ruleForm.password"
+                                show-password
+                            ></el-input>
+                        </el-form-item>
+                        <el-button type="primary" class="loginBtn" @click="loginYz('loginForm')">登录</el-button>
+                    </el-form>
+                </div>
+                <div class="bottom">
+                    <div>
+                        <a
+                            href="https://aq.qq.com/v2/uv_aq/html/reset_pwd/pc_reset_pwd_input_account.html?v=3.0&old_ver_account="
+                            target="_blank"
+                            >忘了密码?</a
+                        >&nbsp;|&nbsp; <a href="#" target="_blank">注册新账号</a>&nbsp;|&nbsp;
+                        <a href="#" target="_blank">意见反馈</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -78,105 +88,85 @@ export default {
 .login {
     height: 100%;
     width: 100%;
-    background: url(../../assets/pageBg/loginBg.jpg) no-repeat center center;
+    background: url(../../assets/pageBg/bg.jpeg) no-repeat center center;
     background-size: 100% 100%;
     overflow: hidden;
 }
-.loginBox {
-    height: 455px;
-    width: 550px;
-    margin: 0 auto;
-    position: relative;
-    top: 50%;
-    margin-top: -287px;
-}
-.loginH2 {
-    font-size: 38px;
-    color: #fff;
-    text-align: center;
-}
-.loginCon {
-    margin-top: 30px;
-    background: #eee;
-    border-radius: 4px;
-    .titleDiv {
-        padding: 0 28px;
-        background: #fff;
-        position: relative;
-        height: 120px;
-        border-radius: 4px 4px 0 0;
-        h3 {
-            font-size: 22px;
-            color: #555;
-            font-weight: initial;
-            padding-top: 23px;
-        }
-        p {
-            font-size: 16px;
-            color: #888;
-            padding-top: 12px;
-        }
-        i {
-            font-size: 65px;
-            color: #ddd;
-            position: absolute;
-            right: 27px;
-            top: 29px;
-        }
-    }
-    .el-form {
-        padding: 25px 25px 30px 25px;
-        background: #eee;
-        border-radius: 0 0 4px 4px;
-    }
-}
+
 .loginBtn {
     width: 100%;
     background: #19b9e7;
+    margin-top: 20px;
 }
-.slideShadow {
-    position: fixed;
-    z-index: 999;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+
+.content {
+    width: 1280px;
+    margin: 370px auto 60px;
+    position: relative;
+
+    .logo_container {
+        width: 334px;
+        height: 334px;
+        visibility: visible;
+        background-color: #fff;
+        border: 1px solid #a0b1c4;
+        position: relative;
+        z-index: 12;
+        padding: 0;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .fr {
+        float: right;
+
+        .title {
+            height: 50px;
+            border-bottom: 1px solid #c0cdd9;
+            background-color: #f9fbfe;
+            font-size: 16px;
+            line-height: 50px;
+        }
+
+        p.m-1 {
+            margin: 0 61px 0 53px;
+        }
+
+        p.m-1 a {
+            color: #999;
+        }
+
+        p a:hover {
+            color: #000;
+        }
+        .fl {
+            float: left;
+        }
+    }
+
+    .clearfix:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
 }
-.slideSty {
+
+.form {
+    margin: 36px 26px;
+}
+
+.bottom {
     position: absolute;
-    width: 380px;
-    height: 311px;
-    background: #e8e8e8;
-    border: 1px solid #dcdcdc;
-    left: 50%;
-    top: 50%;
-    margin-left: -188px;
-    margin-top: -176px;
-    z-index: 99;
-    border-radius: 5px;
-}
-.iconBtn {
-    padding: 9px 0 0 19px;
-    color: #5f5f5f;
-    border-top: 1px solid #d8d8d8;
-    margin-top: 17px;
-    i {
-        font-size: 22px;
-        cursor: pointer;
-    }
-    i:last-child {
-        margin-left: 7px;
+    bottom: 20px;
+    right: 25px;
+    color: #bfbfbf;
+    a {
+        color: #225592;
     }
 }
-</style>
-<style>
-.slideSty .slide-verify {
-    margin: 13px auto 0 auto;
-    width: 350px !important;
-}
-.slideSty .slide-verify-slider {
-    width: 100% !important;
-}
-.slideSty .slide-verify-refresh-icon {
-    display: none;
+@media screen and (max-width: 768px) {
+    .content {
+        width: 334px;
+        margin: 170px auto;
+    }
 }
 </style>

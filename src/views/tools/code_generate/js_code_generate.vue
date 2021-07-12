@@ -258,10 +258,11 @@ export default {
         exportJsCode() {
             this.$message.warning('暂未开放！')
             return
-            let data = []
-            data = this.tableData
+            let data = this.tableData
             exportJsCode(data)
-                .then((res) => {})
+                .then((res) => {
+                    console.log(res)
+                })
                 .catch((err) => {
                     console.log(err)
                 })

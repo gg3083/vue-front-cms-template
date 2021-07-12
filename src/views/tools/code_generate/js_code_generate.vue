@@ -10,7 +10,7 @@
                     <el-button type="primary" size="mini">上传脚本文件</el-button>
                     <div style="float: right;">
                         <el-button type="primary" size="mini" @click="preview">预览</el-button>
-                        <el-button type="primary" size="mini">导出</el-button>
+                        <el-button type="primary" size="mini" @click="exportJsCode">导出</el-button>
                     </div>
                 </el-row>
                 <el-row style="display: flex; justify-content: center;">
@@ -33,21 +33,15 @@
                 <div>
                     <el-tabs v-model="activeName" v-if="checkedSqlTableList.length > 0">
                         <el-tab-pane
-                            v-for="tableName in sqlTableList"
-                            :key="tableName"
-                            :label="tableName"
-                            :name="tableName"
+                            v-for="item in tableData"
+                            :key="item.tableName"
+                            :label="item.tableName"
+                            :name="item.tableName"
                         >
                             <div>
                                 <el-row style="display: flex; justify-content: center;">
-                                    <el-checkbox
-                                        :indeterminate="isIndeterminate"
-                                        v-model="checkAll"
-                                        @change="handleCheckAllChange"
-                                        >全选</el-checkbox
-                                    >
                                     <div style="margin: 15px 10px;"></div>
-                                    <el-checkbox-group v-model="checkedBtn" @change="handleCheckedCitiesChange">
+                                    <el-checkbox-group v-model="item.paramBtn">
                                         <el-checkbox
                                             v-for="btn in checkBtn"
                                             :key="btn.key"
@@ -57,7 +51,7 @@
                                         >
                                     </el-checkbox-group>
                                 </el-row>
-                                <el-table :data="tableData.get(tableName)" stripe style="width: 100%">
+                                <el-table :data="item.paramList" stripe style="width: 100%">
                                     <el-table-column prop="Field" label="名称" width="180"> </el-table-column>
                                     <el-table-column prop="Type" label="类型" width="180"> </el-table-column>
                                     <el-table-column prop="Comment" label="注释"> </el-table-column>
@@ -130,7 +124,7 @@
 </template>
 
 <script>
-import { previewJsCode, tableList, tableGetField } from '@/api/code_generate'
+import { previewJsCode, tableList, tableGetField, exportJsCode } from '@/api/code_generate'
 export default {
     name: 'js_code_generate',
     data() {
@@ -183,7 +177,7 @@ export default {
                 .then((res) => {
                     if (res.code === 0) {
                         this.isShowTable = true
-                        let hasMap = new Map()
+                        let hasMap = []
                         for (let key in res.obj) {
                             let data = res.obj[key]
                             data.forEach((item) => {
@@ -193,12 +187,19 @@ export default {
                                     this.checkData(item)
                                 }
                             })
-                            hasMap.set(key, data)
+                            let param = {
+                                tableName: key,
+                                paramList: data,
+                                paramBtn: ['editBtn', 'viewBtn', 'delBtn', 'showAddModel', '_getPageTab1'],
+                            }
+                            hasMap.push(param)
                         }
                         this.tableData = hasMap
                     }
                 })
-                .catch(() => {})
+                .catch((err) => {
+                    console.log(err)
+                })
         },
         checkBoxChange(index, row) {
             this.$set(this.tableData, index, row)
@@ -212,20 +213,6 @@ export default {
             let checkedCount = value.length
             this.checkAllSqlTable = checkedCount === this.sqlTableList.length
             this.isIndeterminateSqlTable = checkedCount > 0 && checkedCount < this.sqlTableList.length
-            console.log(value)
-        },
-        handleCheckAllChange(val) {
-            this.checkedBtn = val
-                ? this.checkBtn.map((item) => {
-                      return item.key
-                  })
-                : []
-            this.isIndeterminate = false
-        },
-        handleCheckedCitiesChange(value) {
-            let checkedCount = value.length
-            this.checkAll = checkedCount === this.checkBtn.length
-            this.isIndeterminate = checkedCount > 0 && checkedCount < this.checkBtn.length
             console.log(value)
         },
         checkData(item) {
@@ -252,13 +239,7 @@ export default {
         },
         preview() {
             let data = []
-            this.tableData.forEach((value, key) => {
-                data.push({
-                    key: key,
-                    value: value,
-                })
-            })
-            console.log(data)
+            data = this.tableData
             previewJsCode(data)
                 .then((res) => {
                     console.log(res)
@@ -270,6 +251,17 @@ export default {
                         })
                     }
                 })
+                .catch((err) => {
+                    console.log(err)
+                })
+        },
+        exportJsCode() {
+            this.$message.warning('暂未开放！')
+            return
+            let data = []
+            data = this.tableData
+            exportJsCode(data)
+                .then((res) => {})
                 .catch((err) => {
                     console.log(err)
                 })

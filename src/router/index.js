@@ -156,6 +156,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/tools/code_generate/js_code_generate.vue'),
                 meta: { title: '代码生成' },
             },
+            {
+                path: 'test',
+                name: 's:tools:test:menu',
+                component: () => import('@/views/tools/test/index.vue'),
+                meta: { title: '测试' },
+            },
         ],
     },
 ]

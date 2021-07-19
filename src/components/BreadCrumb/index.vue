@@ -17,8 +17,9 @@ export default {
     },
     watch: {
         $route: {
-            handler(route) {
-                let allList = route.matched.filter((item) => {
+            handler(router) {
+                console.log('-----------', router)
+                let allList = router.matched.filter((item) => {
                     if (item.meta && item.meta.title) {
                         if (item.redirect) {
                             item.path = ''

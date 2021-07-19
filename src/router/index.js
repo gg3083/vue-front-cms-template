@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
 import store from '@/store'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
 import Layout from '@/layout'
 import { Message } from 'element-ui'
@@ -166,7 +166,7 @@ export const asyncRoutes = [
     },
 ]
 const creatRouter = () => {
-    return new Router({
+    return new VueRouter({
         routes: currencyRoutes,
         scrollBehavior() {
             return { x: 0, y: 0 }

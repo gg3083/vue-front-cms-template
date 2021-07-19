@@ -13,6 +13,15 @@ module.exports = {
         config.resolve.alias.set('@', resolve('src')).set('views', resolve('src/views'))
         config.optimization.runtimeChunk('single')
     },
+    configureWebpack: {
+        externals: {
+            vue: 'Vue',
+            'vue-router': 'VueRouter',
+            vuex: 'Vuex',
+            axios: 'axios',
+            'element-ui': 'ElementUI',
+        },
+    },
     devServer: {
         host: 'localhost',
         port: '8080',

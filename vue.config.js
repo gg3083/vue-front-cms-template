@@ -14,13 +14,16 @@ module.exports = {
         config.optimization.runtimeChunk('single')
     },
     configureWebpack: {
-        externals: {
-            vue: 'Vue',
-            'vue-router': 'VueRouter',
-            vuex: 'Vuex',
-            axios: 'axios',
-            'element-ui': 'ElementUI',
-        },
+        externals:
+            process.env.NODE_ENV === 'production'
+                ? {
+                      vue: 'Vue',
+                      'vue-router': 'VueRouter',
+                      vuex: 'Vuex',
+                      axios: 'axios',
+                      'element-ui': 'ElementUI',
+                  }
+                : {},
     },
     devServer: {
         host: 'localhost',

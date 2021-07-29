@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
+import router from '@/router'
+import './plugins/element.js'
+//使用cdn 屏蔽上面两行 放开下面一行
+// import router from './router'
 import store from './store'
 import '@/style/index.scss' // glob scss
-// import './plugins/element.js'
 import animated from 'animate.css'
 import '@/assets/iconfont/iconfont.css'
 import * as filters from './filters'

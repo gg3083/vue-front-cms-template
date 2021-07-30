@@ -128,12 +128,8 @@
             <el-dialog title="查看" :visible.sync="queryDialog" width="30%">
                 <div>
                     <el-form ref="form" :rules="modelFormRules" :model="editModelForm" label-width="120px">
-                        <el-form-item
-                            :label="`${formCol.label}:`"
-                            :key="index"
-                            v-for="(formCol, index) in editModelForm"
-                        >
-                            <span>{{ formCol.value }} </span>
+                        <el-form-item :label="`${index}:`" :key="index" v-for="(formCol, index) in editModelForm">
+                            <span>{{ formCol }} </span>
                         </el-form-item>
                         <el-form-item>
                             <el-button @click="queryDialog = false">关闭</el-button>
@@ -148,11 +144,11 @@
                             :label="`${editCol.label}:`"
                             :key="index"
                             v-for="(editCol, index) in addModelFormColumn"
-                            :prop="`${editCol.prop}`"
+                            :prop="editCol.prop"
                         >
                             <span v-if="editCol.type">
                                 <el-select
-                                    v-model="addModelForm[editCol.prop].value"
+                                    v-model="addModelForm[editCol.prop]"
                                     :placeholder="editCol.placeholder"
                                     style="width: 100%;"
                                     size="small"
@@ -167,7 +163,7 @@
                             </span>
                             <span v-else>
                                 <el-input
-                                    v-model="addModelForm[editCol.prop].value"
+                                    v-model="addModelForm[editCol.prop]"
                                     class="el-input-item"
                                     size="small"
                                 ></el-input>
@@ -187,11 +183,11 @@
                             :label="`${editCol.label}:`"
                             :key="index"
                             v-for="(editCol, index) in editModelFormColumn"
-                            :prop="`${editCol.prop}`"
+                            :prop="editCol.prop"
                         >
                             <span v-if="editCol.type">
                                 <el-select
-                                    v-model="editModelForm[editCol.prop].value"
+                                    v-model="editModelForm[editCol.prop]"
                                     :placeholder="editCol.placeholder"
                                     style="width: 100%;"
                                     size="small"
@@ -206,7 +202,7 @@
                             </span>
                             <span v-else>
                                 <el-input
-                                    v-model="editModelForm[editCol.prop].value"
+                                    v-model="editModelForm[editCol.prop]"
                                     class="el-input-item"
                                     size="small"
                                 ></el-input>
@@ -302,26 +298,30 @@ export default {
     data() {
         return {
             currentPage: 1,
-            pageSize: 10,
+            pageSize: this.setPageSize,
             total: 0,
             pageSizes: [10, 20, 30, 40],
             tablePage: [],
             editDialog: false,
             addDialog: false,
-            editModelForm: this.modelForm,
-            addModelForm: this.modelForm,
+            editModelForm: {},
+            addModelForm: {},
             queryDialog: false,
         }
     },
     created() {
         this.pageSize = this.setPageSize
         this._getPageTab1(this.currentPage, this.pageSize)
-        for (let item in this.editModelForm) {
-            if (this.editModelForm[item] && this.editModelForm[item].label === '') {
-                this.editModelForm[item].label = item
-            }
+        let editFormData = {}
+        let addFormData = {}
+        for (let item in this.modelForm) {
+            addFormData[item] = ''
+            editFormData[item] = ''
         }
+        this.addModelForm = addFormData
+        this.editModelForm = editFormData
     },
+    mounted() {},
     methods: {
         handleSize(val) {
             this.pageSize = val
@@ -366,17 +366,13 @@ export default {
                 case 'editBtn':
                     this.editDialog = true
                     for (let item in row) {
-                        if (this.editModelForm[item]) {
-                            this.editModelForm[item].value = row[item]
-                        }
+                        this.editModelForm[item] = row[item]
                     }
                     break
                 case 'viewBtn':
                     this.queryDialog = true
                     for (let item in row) {
-                        if (this.editModelForm[item]) {
-                            this.editModelForm[item].value = row[item]
-                        }
+                        this.editModelForm[item] = row[item]
                     }
                     break
                 case 'delBtn':
@@ -417,11 +413,11 @@ export default {
                 let req = {}
                 this.editModelFormColumn.forEach((item) => {
                     if (this.editModelForm[item.prop] !== '') {
-                        req[item.prop] = this.editModelForm[item.prop].value
+                        req[item.prop] = this.editModelForm[item.prop]
                     }
                 })
                 if (valid) {
-                    let id = this.editModelForm.id.value
+                    let id = this.editModelForm.id
                     console.log('修改校验通过', id, req)
                     this.editFunc(id, req)
                         .then((res) => {
@@ -444,7 +440,6 @@ export default {
             })
         },
         addModelFunc(formName) {
-            console.log(this.$refs[formName])
             this.$refs[formName].validate((valid) => {
                 let req = {}
                 this.addModelFormColumn.forEach((item) => {
@@ -452,15 +447,15 @@ export default {
                         let model = this.addModelForm[item.prop]
                         switch (model.type) {
                             case Number:
-                                req[item.prop] = Number(model.value)
+                                req[item.prop] = Number(model)
                                 break
                             default:
-                                req[item.prop] = model.value
+                                req[item.prop] = model
                         }
                     }
                 })
                 if (valid) {
-                    console.log('添加校验通过', req)
+                    // console.log('添加校验通过', req)
                     this.addFunc(req)
                         .then((res) => {
                             if (res.code === 0) {
@@ -513,8 +508,8 @@ export default {
         },
         initModelForm() {
             for (let item in this.addModelForm) {
-                this.addModelForm[item].value = ''
-                this.editModelForm[item].value = ''
+                this.addModelForm[item] = ''
+                this.editModelForm[item] = ''
             }
         },
     },
